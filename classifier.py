@@ -12,23 +12,10 @@ class CommentClassifier:
                           root_comment: str,
                           parent_comment: str,
                           categories: List[str] = [
-    # Emotional and Tonal Categories
-    "positive_emotion",        # Encompasses "nice", "positive_supportive", "humoristic"
-    "neutral_emotion",         # Existing "neutral"
-    "negative_emotion",        # Covers "condescending", "sarcastic", "egotist"
-    
-    # Discriminatory and Harmful Content
-    "hate_speech",             # Broad category covering "derogatory_general", "hate_general"
-    
-    # Specific Discrimination Types
-    "racial_discrimination",   # Includes "racist", "xenophobic"
-    "religious_discrimination", # Covers "antisemitic", "islamophobic", "anti_christian"
-    "gender_discrimination",   # Encompasses "sexist", "homophobic"
-    
-    # Intention and Content Types
-    "violent_intent",          # "inciting_violence"
-    "factual_statement",       # "true", "false"
-]) -> Dict[str, List[str]]:
+                              "derogatory_general", "antisemitic", "islamophobic", "anti_christian", "racist",
+                              "sexist", "xenophobic", "condescending", "inciting_violence", "sarcastic", "neutral",
+                              "positive_supportive", "off_topic", "hate_general"
+                        ]) -> Dict[str, List[str]]:
         prompt = f"""
         You are a professional comment classifier specializing in detecting nuanced discriminatory and hateful language.
         Your task is to categorize comments strictly into one or more of these categories: {', '.join(categories)}.
@@ -37,14 +24,14 @@ class CommentClassifier:
         - Read the comment carefully and detect subtle stereotypes, coded language, and implied biases.
         - Choose ONE OR MORE primary categories if applicable.
         - Respond with EXACTLY the category names in lowercase, separated by commas if multiple categories apply.
-
+        - Consider cultural context and the implications of emoticons.
         Parent Content: {parent_comment}
 
         Classification:
         """
         print("prompt:", prompt)
         payload = {
-            "model": "mistral-medium",
+            "model": "mistral-large-2411",
             "messages": [
                 {"role": "system", "content": "You are a precise and culturally sensitive comment classification assistant."},
                 {"role": "user", "content": prompt}
