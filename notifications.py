@@ -25,7 +25,7 @@ def list_mentions(pds_url, session_token):
         )
         response.raise_for_status()
         notifications = response.json().get("notifications", [])
-        print(f"Fetched {len(notifications)} notifications.")
+        # print(f"Fetched {len(notifications)} notifications.")
         
         mentions = [
         (

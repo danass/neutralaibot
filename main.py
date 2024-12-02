@@ -35,7 +35,7 @@ def main():
             mentions = list_mentions(pds_url, session_token)
 
             if not mentions:
-                print("No new mentions found.")
+                print(".", end= "")
             else:
                 parent_uris = [mention['parent'] for mention in mentions if mention['parent']]
                 root_uris = [mention['root'] for mention in mentions if mention['root']]
