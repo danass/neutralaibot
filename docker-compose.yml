@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  blueskyclassify:
+    build: .
+    environment:
+      - ATP_PDS_HOST=https://bsky.social
+      - ATP_AUTH_HANDLE=${ATP_AUTH_HANDLE}
+      - ATP_AUTH_PASSWORD=${ATP_AUTH_PASSWORD}
+      - MISTRAL_API_KEY=${MISTRAL_API_KEY}
+    ports:
+      - "80:80"
+    volumes:
+      - .:/app

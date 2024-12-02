@@ -2,7 +2,7 @@ import requests
 from datetime import datetime, timezone
 
 def post_reply_in_mention(pds_url, session_token, repo, mention, reply_text):
-    print("Mentioned:", mention)
+    # print("Mentioned:", mention)
     try:
         root_uri = mention.get('rooturi') or mention['uri']
         root_cid = mention.get('rootcid') or mention['cid']
