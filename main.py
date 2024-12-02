@@ -52,19 +52,19 @@ def main():
                     print(f"  Text: {mention['text']}")
                     print(f"  CID: {mention['cid']}")
                     print(f"  Indexed At: {mention['indexedAt']}")
-                    print(f"  Parent: {mention['parent']}")
+                    # print(f"  Parent: {mention['parent']}")
                     if mention['parent']:
                         parent_content = messages_content.get(mention['parent'], {}).get("text", "No content found")
                         parent_author = messages_content.get(mention['parent'], {}).get("author", "unknown")
-                        print(f"  Parent Content: {parent_content}")
-                        print(f"  Parent Author: {parent_author}")
+                        # print(f"  Parent Content: {parent_content}")
+                        # print(f"  Parent Author: {parent_author}")
                     else:
                         parent_content = None
                         parent_author = None
                     print(f"  Root: {mention['root']}")
                     if mention['root']:
                         root_content = messages_content.get(mention['root'], {}).get("text", "No content found")
-                        print(f"  Root Content: {root_content}")
+                        # print(f"  Root Content: {root_content}")
                     else:
                         root_content = None
 
