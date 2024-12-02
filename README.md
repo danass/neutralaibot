@@ -2,6 +2,8 @@
 
 NeutralAI Bot est un bot conçu pour classifier les commentaires et générer des réponses spirituelles sur la plateforme Bluesky. Il utilise l'API Mistral pour effectuer des classifications et générer des réponses.
 
+Une version active du bot est disponible sur Bluesky : [neutralai.bsky.social](https://bsky.app/profile/neutralai.bsky.social). Mentionnez simplement le bot sur Bluesky pour le déclencher.
+
 ## 🚀 Prérequis
 
 - Docker 🐳
@@ -31,6 +33,14 @@ NeutralAI Bot est un bot conçu pour classifier les commentaires et générer de
 ## 📈 Utilisation
 
 Le bot va automatiquement se connecter à la plateforme Bluesky, récupérer les mentions, classifier les commentaires et répondre aux mentions avec des réponses spirituelles ou des classifications.
+
+### Mode Normal
+
+Le bot analyse les commentaires mentionnés et les classe dans des catégories spécifiques telles que "racist", "sexist", "neutral", etc. en utilisant l'API Mistral. Les résultats de la classification sont ensuite utilisés pour générer des réponses appropriées.
+
+### Mode Witty
+
+En plus de classifier les commentaires, le bot peut également générer des réponses spirituelles et humoristiques. Lorsqu'un commentaire ne nécessite pas de classification, le bot utilise l'API Mistral pour créer une réponse courte et amusante basée sur le texte de la mention.
 
 ## 📂 Structure du projet
 
