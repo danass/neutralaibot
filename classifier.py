@@ -29,7 +29,7 @@ class CommentClassifier:
 
         Classification:
         """
-        print("prompt:", prompt)
+        # print("prompt:", prompt)
         payload = {
             "model": "mistral-large-2411",
             "messages": [
@@ -82,3 +82,54 @@ class CommentClassifier:
             "parent_comment": parent_comment,
             "classification": ["neutral"]
         }
+
+    def generate_witty_reply(self, mention_text: str) -> str:
+        prompt = f"""
+        You are a witty and humorous assistant. Respond to the following mention with a short, witty, and clever reply.
+
+        Mention: {mention_text}
+
+        Reply:
+        """
+        payload = {
+            "model": "mistral-large-2411",
+            "messages": [
+                {"role": "system", "content": "You are a witty and humorous assistant."},
+                {"role": "user", "content": prompt}
+            ],
+            "temperature": 0.3,
+            "max_tokens": 50,
+            "stop": ["\n"]
+        }
+
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self.api_key}"
+        }
+
+        for _ in range(3):  # Retry up to 3 times
+            try:
+                time.sleep(self.rate_limit_delay)
+
+                response = requests.post(self.base_url, json=payload, headers=headers, timeout=10)
+                response.raise_for_status()
+
+                response_data = response.json()
+                witty_reply = response_data['choices'][0]['message']['content'].strip()
+
+                return witty_reply
+
+            except requests.exceptions.RequestException as e:
+                if e.response is not None and e.response.status_code == 429:
+                    print("Rate limit exceeded, retrying...")
+                    time.sleep(5)  # Wait before retrying
+                else:
+                    print(f"API Request Error for witty reply: {mention_text}")
+                    print(f"Error details: {e}")
+                    return "Oops, something went wrong! 😅"
+            except Exception as e:
+                print(f"Unexpected error generating witty reply: {mention_text}")
+                print(f"Error details: {e}")
+                return "Oops, something went wrong! 😅"
+
+        return "Oops, something went wrong! 😅"

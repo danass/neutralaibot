@@ -4,7 +4,7 @@ import os
 from classifier import CommentClassifier
 from credentials import load_credentials, login
 from notifications import list_mentions, mark_notifications_as_read
-from reply import post_reply
+from reply import post_reply_in_mention
 
 def get_messages_content(pds_url, session_token, uris):
     try:
@@ -58,54 +58,58 @@ def main():
                         parent_author = messages_content.get(mention['parent'], {}).get("author", "unknown")
                         print(f"  Parent Content: {parent_content}")
                         print(f"  Parent Author: {parent_author}")
+                    else:
+                        parent_content = None
+                        parent_author = None
                     print(f"  Root: {mention['root']}")
                     if mention['root']:
                         root_content = messages_content.get(mention['root'], {}).get("text", "No content found")
                         print(f"  Root Content: {root_content}")
-
-                    # Classify the parent and root comments
-                    classification = classifier.classify_comments(root_content, parent_content)
-
-                    print(f"  Root Comment: {classification['root_comment']}")
-                    print(f"  Parent Comment: {classification['parent_comment']}")
-                    print(f"  Classification: {', '.join(classification['classification'])}")
-
-                    # Post a reply with the classification result
-                    # Calculate the fixed length of the parts that won't change (classification and author)
-                    classification_text = f"Classification: {', '.join(classification['classification'])}\n"
-                    author_text = f"by: @{parent_author}"
-
-                    fixed_length = len(classification_text) + len(author_text)
-
-                    # Calculate the remaining space for parent_content
-                    remaining_length = 290 - fixed_length
-
-                    # Trim parent_content to fit the remaining space, ensuring it doesn't exceed the limit
-                    if remaining_length > 0:
-                        if len(parent_content) > remaining_length:
-                            parent_content = parent_content[:remaining_length - 3] + "..."  # Truncate and add ellipsis
                     else:
-                        parent_content = ""  # In case the classification and author take up the full 300 chars
+                        root_content = None
 
-                    # Construct the reply text with the trimmed parent_content
-                    reply_text = (
-                        f"Comment: {parent_content}\n"
-                        f"Classification: {', '.join(classification['classification'])}\n"
-                        f"by: @{parent_author}"
-                    )
+                    if root_content or parent_content:
+                        # Classify the parent and root comments
+                        classification = classifier.classify_comments(root_content, parent_content)
 
-                    post_reply(pds_url, session_token, repo, mention['root'], mention['cid'], mention['parent'], mention['cid'], reply_text)
+                        print(f"  Root Comment: {classification['root_comment']}")
+                        print(f"  Parent Comment: {classification['parent_comment']}")
+                        print(f"  Classification: {', '.join(classification['classification'])}")
+
+                        # Post a reply with the classification result
+                        classification_text = f"Classification: {', '.join(classification['classification'])}\n"
+                        author_text = f"by: @{parent_author}"
+
+                        fixed_length = len(classification_text) + len(author_text)
+                        remaining_length = 290 - fixed_length
+
+                        if remaining_length > 0:
+                            if len(parent_content) > remaining_length:
+                                parent_content = parent_content[:remaining_length - 3] + "..."
+                        else:
+                            parent_content = ""
+
+                        reply_text = (
+                            f"Comment: {parent_content}\n"
+                            f"Classification: {', '.join(classification['classification'])}\n"
+                            f"by: @{parent_author}"
+                        )
+                    else:
+                        # Generate a witty reply using Mistral
+                        reply_text = classifier.generate_witty_reply(mention['text'])
+
+                    post_reply_in_mention(pds_url, session_token, repo, mention, reply_text)
 
                 mark_notifications_as_read(pds_url, session_token)
 
-            time.sleep(60)  # Wait for 60 seconds
+            time.sleep(20)
 
         except KeyboardInterrupt:
             print("Program interrupted manually. Exiting...")
             break
         except Exception as e:
             print(f"Unexpected error: {e}")
-            time.sleep(10)  # Wait before retrying
+            time.sleep(10)
 
 if __name__ == "__main__":
     main()

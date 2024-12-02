@@ -1,8 +1,14 @@
 import requests
 from datetime import datetime, timezone
 
-def post_reply(pds_url, session_token, repo, root_uri, root_cid, parent_uri, parent_cid, reply_text):
+def post_reply_in_mention(pds_url, session_token, repo, mention, reply_text):
+    print("Mentioned:", mention)
     try:
+        root_uri = mention.get('rooturi') or mention['uri']
+        root_cid = mention.get('rootcid') or mention['cid']
+        parent_uri = mention.get('parenturi') or mention['uri']
+        parent_cid = mention.get('parentcid') or mention['cid']
+
         payload = {
             "repo": repo,
             "collection": "app.bsky.feed.post",
@@ -16,6 +22,7 @@ def post_reply(pds_url, session_token, repo, root_uri, root_cid, parent_uri, par
                 "createdAt": datetime.now(timezone.utc).isoformat()
             }
         }
+
         headers = {
             "Authorization": f"Bearer {session_token}",
             "Content-Type": "application/json"

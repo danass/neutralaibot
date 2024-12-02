@@ -26,21 +26,31 @@ def list_mentions(pds_url, session_token):
         response.raise_for_status()
         notifications = response.json().get("notifications", [])
         print(f"Fetched {len(notifications)} notifications.")
-
+        
         mentions = [
+        (
+            print(notif),  # Affiche la notification entière
             {
                 "cid": notif.get("cid"),
+                "uri": notif.get("uri"),
                 "author": notif.get("author", {}).get("handle"),
                 "text": notif.get("record", {}).get("text"),
                 "indexedAt": notif.get("indexedAt"),
                 "parent": notif.get("record", {}).get("reply", {}).get("parent", {}).get("uri"),
                 "root": notif.get("record", {}).get("reply", {}).get("root", {}).get("uri"),
+                "rootcid": notif.get("record", {}).get("reply", {}).get("root", {}).get("cid"),
+                "rooturi": notif.get("record", {}).get("reply", {}).get("root", {}).get("uri"),
+                "parentcid": notif.get("record", {}).get("reply", {}).get("parent", {}).get("cid"),
+                "parenturi": notif.get("record", {}).get("reply", {}).get("parent", {}).get("uri"),
+                # "parentcid": notif.get("record", {}).get("reply", {}).get("parent", {}).get("cid"),
             }
-            for notif in notifications
-            if notif.get("reason") == "mention" and not notif.get("isRead", False)
+        )[1]  # Sélectionne le dictionnaire après avoir imprimé
+        for notif in notifications
+        if notif.get("reason") == "mention" and not notif.get("isRead", False)
         ]
 
-        print(f"Found {len(mentions)} mentions.")
+
+        # print(f"Found {len(mentions)} mentions.")
         return mentions
 
     except requests.RequestException as error:
