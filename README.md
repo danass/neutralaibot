@@ -14,7 +14,7 @@ Une version active du bot est disponible sur Bluesky : [neutralai.bsky.social](h
 
 1. Clonez ce dépôt :
     ```bash
-    git clone https://github.com/votre-utilisateur/neutralaibot.git
+    git clone https://github.com/danass/neutralaibot.git
     cd neutralaibot
     ```
 
