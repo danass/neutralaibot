@@ -16,23 +16,27 @@ class CommentClassifier:
                               "sexist", "xenophobic", "condescending", "inciting_violence", "sarcastic", "neutral",
                               "positive_supportive", "hate_general"
                         ]) -> Dict[str, List[str]]:
+        comment_text = ''
+        
+        if root_comment != parent_comment:
+            comment_text = f"Tweet: {root_comment}\nReply to the tweet: {parent_comment}"
+        else:
+            comment_text = f"Comment: {root_comment}"
+
         prompt = f"""
         You are a professional comment classifier specializing in detecting nuanced discriminatory and hateful language.
         Your task is to categorize comments strictly into one or more of these categories: {', '.join(categories)}.
 
         Guidelines:
-        - Read the {f'reply to the tweet' if root_comment != parent_comment else 'comment'} carefully and detect subtle stereotypes, coded language, and implied biases.\n"
-        - Choose ONE OR MORE primary categories if applicable.\n"
-        - Respond with EXACTLY the category names in lowercase, separated by commas if multiple categories apply.\n"
-        - Consider cultural context and the implications of emoticons.\n\n"
+        - Read the {comment_type} carefully and detect subtle stereotypes, coded language, and implied biases.
+        - Choose ONE OR MORE primary categories if applicable.
+        - Respond with EXACTLY the category names in lowercase, separated by commas if multiple categories apply.
+        - Consider cultural context and the implications of emoticons.
 
-        {f'Tweet: {root_comment}\n' if root_comment != parent_comment else ''}"
-        {f'Reply to the tweet: {parent_comment}' if root_comment != parent_comment else f'Comment: {root_comment}'}"
-    
+        {comment_text}
 
         Classification:
         """
-        # print("prompt:", prompt)
         payload = {
             "model": "mistral-large-2411",
             "messages": [
